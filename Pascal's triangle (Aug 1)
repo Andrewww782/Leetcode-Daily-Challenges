@@ -1,0 +1,29 @@
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        int[][] triangle = new int[numRows][numRows];
+
+        // Step 2: Fill Pascal's Triangle using the rules
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col <= row; col++) {
+                if (col == 0 || col == row) {
+                    triangle[row][col] = 1;
+                } else {
+                    triangle[row][col] = triangle[row - 1][col - 1] + triangle[row - 1][col];
+                }
+            }
+        }
+
+        // Step 3: Convert 2D array to List<List<Integer>>
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int row = 0; row < numRows; row++) {
+            List<Integer> currentRow = new ArrayList<>();
+            for (int col = 0; col <= row; col++) {
+                currentRow.add(triangle[row][col]);
+            }
+            result.add(currentRow);
+        }
+
+        return result;
+    }
+}
