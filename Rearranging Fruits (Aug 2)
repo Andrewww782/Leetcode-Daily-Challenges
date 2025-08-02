@@ -1,0 +1,37 @@
+import java.util.*;
+
+public class Solution {
+    public long minCost(int[] basket1, int[] basket2) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        int n = basket1.length;
+        int minFruit = Integer.MAX_VALUE;
+
+        // Count total frequency of each fruit and find the minimum fruit value
+        for (int i = 0; i < n; i++) {
+            freq.put(basket1[i], freq.getOrDefault(basket1[i], 0) + 1);
+            freq.put(basket2[i], freq.getOrDefault(basket2[i], 0) - 1);
+            minFruit = Math.min(minFruit, Math.min(basket1[i], basket2[i]));
+        }
+
+        List<Integer> excess = new ArrayList<>();
+
+        // Check if it’s possible to make both baskets equal
+        for (int fruit : freq.keySet()) {
+            int count = freq.get(fruit);
+            if (count % 2 != 0) return -1;  // odd means impossible
+            for (int i = 0; i < Math.abs(count) / 2; i++) {
+                excess.add(fruit);
+            }
+        }
+
+        Collections.sort(excess);
+        long cost = 0;
+
+        // For the first half of the sorted list, calculate min cost per swap
+        for (int i = 0; i < excess.size() / 2; i++) {
+            cost += Math.min(excess.get(i), 2 * minFruit);
+        }
+
+        return cost;
+    }
+}
