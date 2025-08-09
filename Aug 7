@@ -1,0 +1,73 @@
+class Solution {
+    int n;
+    int[][] dp;
+    int[][] grid;
+    public int maxCollectedFruits(int[][] grid) {
+        this.n = grid.length;
+        this.grid = grid;
+        this.dp = new int[n][n];
+
+        for(int[] is : dp) Arrays.fill(is,-1);
+        // first child
+        int firstChildScore = collectFromFirstChild();
+
+        // Second child
+        int secondChildScore = dfsSecondChild(0,n-1);
+
+        // Third Child
+        int thirdChildScore = dfsThirdChild(n-1,0);
+
+        return (firstChildScore + secondChildScore + thirdChildScore);
+    }
+
+    public int dfsSecondChild(int i,int j) {
+        
+        if (i < 0 || i >= n || j < 0 || j >= n) {
+            return 0;
+        }
+        if (i == n-1 && j == n-1) {
+            return 0;
+        }
+        if ( i == j || i > j) {
+            return 0;
+        }
+       
+        if(dp[i][j]  != -1) return dp[i][j];
+
+        int leftcorner = grid[i][j] + dfsSecondChild(i+1, j-1);
+        int middle = grid[i][j] + dfsSecondChild( i+1, j);
+        int rightcorner = grid[i][j] + dfsSecondChild(i+1, j+1);
+
+        return dp[i][j] = Math.max(middle, Math.max(rightcorner,leftcorner));
+    }
+
+    public int dfsThirdChild(int i,int j) {
+        
+        if (i < 0 || i >= n || j < 0 || j >= n) {
+            return 0;
+        }
+        if (i == n-1 && j == n-1) {
+            return 0;
+        }
+        if ( i == j || j > i) {
+            return 0;
+        }
+        if(dp[i][j] != -1) return dp[i][j];
+
+        int topcorner = grid[i][j] + dfsThirdChild( i-1, j+1);
+        int right = grid[i][j] + dfsThirdChild( i, j+1);
+        int rightcorner = grid[i][j] + dfsThirdChild(i+1, j+1);
+
+        return dp[i][j] = Math.max(right, Math.max(rightcorner,topcorner));
+    }
+
+    public int collectFromFirstChild() {
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += grid[i][i];
+            grid[i][i] = 0;
+            dp[i][i] = 0;
+        }
+        return ans;
+    }
+}
